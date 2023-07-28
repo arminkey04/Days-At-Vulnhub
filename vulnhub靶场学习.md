@@ -1,6 +1,6 @@
 # vulnhub靶场学习
 
-##  #0 Linux基础知识查漏补缺
+##  #0 基础知识查漏补缺
 
 #### 1> mv命令修改文件名
 
@@ -24,8 +24,10 @@ which linpeas
 
 ##### 发现靶机，新出现的条目即是靶机
 
+​	-sn存活探测
+
 ```bash
-sudo nmap -sn 192.168.xxx.0/24
+sudo nmap -sn 192.168.xxx.1/24
 ```
 
 ##### 简单端口扫描，输出靶机开启的端口  
@@ -70,17 +72,7 @@ sudo nmap -sU --top-ports 20 靶机ip -oA nmapscan/udp
 sudo nmap --script=vuln -p21,22,80  靶机ip -oA nmapscan/vuln
 ```
 
-
-
-## #1 MATRIX-BREAKOUT: 2 MORPHEUS
-
-### 原地址
-
-https://www.vulnhub.com/entry/matrix-breakout-2-morpheus,757/
-
-### 知识点
-
-#### 1> nc+php反弹shell
+#### 4> nc+php反弹shell
 
 靶机添加载体.php文件，写入
 
@@ -94,23 +86,23 @@ https://www.vulnhub.com/entry/matrix-breakout-2-morpheus,757/
 nc -lvvp 4444
 ```
 
-#### 2> 字符转含特殊字符可能上传不上去，这是需要将其转换成url编码，再上传试试
+#### 5> 字符转含特殊字符可能上传不上去，这是需要将其转换成url编码，再上传试试
 
-#### 3> 使用dirsearch搜索文件
+#### 6> 使用dirsearch搜索文件
 
 ```bash
 dirsearch  -u 靶机ip -x 403,401
 ```
 
-#### 4> 使用gobuster搜索文件
+#### 7> 使用gobuster搜索文件
 
 ```bash
 gobuster dir -u http://靶机ip -w /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt -x php,html,txt
 ```
 
-#### 5> 使用bp抓包时不必一直开启intercept，在history中会显示所有的包
+#### 8> 使用bp抓包时不必一直开启intercept，在history中会显示所有的包
 
-#### 6> 生成更好的tty shell
+#### 9> 生成更好的tty shell
 
 反弹的shell中输入
 
@@ -118,7 +110,7 @@ gobuster dir -u http://靶机ip -w /usr/share/wordlists/dirbuster/directory-list
 python3 -c 'import pty;pty.spawn("bin/bash")'
 ```
 
-#### 7> 使用wget下载靶机文件
+#### 10> 使用wget下载靶机文件
 
 例
 
@@ -126,7 +118,7 @@ python3 -c 'import pty;pty.spawn("bin/bash")'
 wget http://192.168.0.127/.cypher-neo/png
 ```
 
-#### 8> 使用exiftool查看图片元信息
+#### 11> 使用exiftool查看图片元信息
 
 显示图片大小，分辨率，文件格式，色深等
 
@@ -134,7 +126,7 @@ wget http://192.168.0.127/.cypher-neo/png
 exiftool cypher-neo.png
 ```
 
-#### 9> 使用steghide提取隐藏信息
+#### 12> 使用steghide提取隐藏信息
 
 ```bash
 steghide extract -sf 文件名
@@ -142,7 +134,7 @@ steghide extract -sf 文件名
 
 对于有密码加密的需要提供密码
 
-#### 10> 上传并利用linpeas辅助提权
+#### 13> 上传并利用linpeas辅助提权
 
 首先开启http服务
 
@@ -168,4 +160,46 @@ chmod +x linpeas.sh
 ```
 ./linpeas.sh
 ```
+
+#### 14> hydra 字典爆破ssh
+
+```bash
+hydra -L 用户名文件 -P 密码文件 ssh://靶机ip
+```
+
+#### 15> mysql连接
+
+```bash
+mysql -u 用户名 -h 靶机ip -p
+```
+
+mysql语句以分号结束
+
+#### 16> ssh连接
+
+```bash
+ssh 用户名@靶机ip
+```
+
+#### 17>查找可执行
+
+```
+find / -perm -4000 -type f -exec ls -la {} 2>/dev/null \;
+```
+
+
+
+## #1 MATRIX-BREAKOUT: 2 MORPHEUS
+
+### 原地址
+
+https://www.vulnhub.com/entry/matrix-breakout-2-morpheus,757/
+
+### 
+
+## #2 KIOPTRIX: LEVEL 1 (#1)
+
+### 原地址
+
+https://www.vulnhub.com/entry/kioptrix-level-1-1,22/
 
